@@ -60,17 +60,16 @@ class ProcessClientDataView(View):
         if data['type'] == "client" and ('id' in data):
             # reply 404 Not Found if object doesn't exist, as per JSON API v1.0
             client = get_object_or_404(BuoyClient, id=data['id'])
-            for attribute, value in data['attributes']:
+            for attribute in data['attributes']:
                 # update model attribute value
                 try:
-                    client[attribute] = value
-                except:
+                    setattr(client, attribute, data['attributes'][attribute])
+                except Exception as e:
                     # field doesn't exist; reply 400 Bad Request
                     return HttpResponse(status=400)
             client.save()
-
             # if successful, reply with 200 OK and top-level meta data (if exists), as per JSON API v1.0
-            if 'meta' in response_json:
+            if 'meta' in request_json:
                 response_json = json.dumps(request_json['meta'])
                 return HttpResponse(response_json, status=200)
             else:
