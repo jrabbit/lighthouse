@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import View, TemplateView
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.http import HttpResponse
 
 from .models import BuoyClient
 
@@ -23,26 +24,29 @@ class HomeView(TemplateView):
 class ProcessClientDataView(View):
 
     def post(self, request):
-        print request.body
         # get json payload from request.body
-        data = json.loads(request.body)
+        request_json = json.loads(request.body)
+        # shortcut; remember -- is a copy, not a reference
+        data = request_json['data']
+
         # send the context data to a checking function (verify using public keys? is that possible?)
 
         if data['type'] == "client":
-            if data['id']:  # block create requests with client-generated IDs
+            if 'id' in data:  # block create requests with client-generated IDs
                 # reply 403 Forbidden for unsupported request to create a resource, as per JSON API v1.0
                 return HttpResponse(status=403)
             else:
                 # generate uuid and add to json
-                data['id'] = uuid.uuid4()
+                client_id = uuid.uuid4()
                 # build and save client model
-                client = BuoyClient(id=data['id'],
+                client = BuoyClient(id=client_id,
                                 name=data['attributes']['name'],
                                 url=data['attributes']['url']
                                 )
                 client.save()
                 # convert the updated data back into json
-                response_json = json.dumps(data)
+                request_json['data']['id'] = client_id.hex
+                response_json = json.dumps(request_json)
                 # reply 201 Created with resource and id, as per JSON API v1.0
                 return HttpResponse(response_json, status=201)
         else:
@@ -50,12 +54,12 @@ class ProcessClientDataView(View):
             return HttpResponse(status=409)
 
     def patch(self, request):
-        if data['type'] == "client":
-            try:
-                client = BuoyClient.objects.get(id=data['id'])
-            except:
-                # reply 404 Not Found if object doesn't exist, as per JSON API v1.0
-                return HttpResponse(status=404)
+        request_json = json.loads(request.body)
+        data = request_json['data']
+
+        if data['type'] == "client" and ('id' in data):
+            # reply 404 Not Found if object doesn't exist, as per JSON API v1.0
+            client = get_object_or_404(BuoyClient, id=data['id'])
             for attribute, value in data['attributes']:
                 # update model attribute value
                 try:
@@ -66,8 +70,8 @@ class ProcessClientDataView(View):
             client.save()
 
             # if successful, reply with 200 OK and top-level meta data (if exists), as per JSON API v1.0
-            if data['meta']:
-                response_json = json.dumps(data['meta'])
+            if 'meta' in data:
+                response_json = json.dumps(request_json['meta'])
                 return HttpResponse(response_json, status=200)
             else:
                 return HttpResponse(status=200)

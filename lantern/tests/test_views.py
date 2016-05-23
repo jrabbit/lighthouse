@@ -27,7 +27,6 @@ class HomeViewTest(TestCase):
         self.assertContains(response, self.sample_data[0]['id'])
         self.assertContains(response, self.sample_data[1]['id'])
 
-"""
 class ProcessClientDataViewTest(TestCase):
     def setUp(self):
         self.new_client_data_1 = self.from_file('json/new_client_data_1.json')
@@ -37,19 +36,31 @@ class ProcessClientDataViewTest(TestCase):
 
     def from_file(self, filename):
         filename = str("%s/%s" % (os.path.dirname(__file__), filename))
-        with open(filename, 'r') as f:
-            data = json.load(f)
+        data = open(filename, 'r').read()
         return data
 
+    # ProcessClientDataView.post
     def test_correct_json_gets_added(self):
-        pass    
+        response_1 = self.client.post('/rod/', self.new_client_data_1, content_type='application/vnd.api+json')
+        response_2 = self.client.post('/rod/', self.new_client_data_2, content_type='application/vnd.api+json')
+
+        self.assertEqual(response_1.status_code, 201)
+        self.assertEqual(response_2.status_code, 201)
+
+        response_json_1 = json.loads(response_1.content)
+        response_json_2 = json.loads(response_2.content)
+
+        self.assertTrue('id' in response_json_1['data'])
+        self.assertTrue('id' in response_json_2['data'])
 
     def test_incorrect_type_gets_rejected(self):
         bad_type = self.from_file('json/bad_type.json')
-        print bad_type
         response = self.client.post('/rod/', bad_type, content_type='application/vnd.api+json')
         self.assertEqual(response.status_code, 409)
-"""
+
+    # ProcessClientDataView.fetch
+    def test_correct_json_gets_updated(self):
+        pass
 
 class ClientInfoViewTest(TestCase):
     def setUp(self):
