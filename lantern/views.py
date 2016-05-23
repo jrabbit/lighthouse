@@ -70,7 +70,7 @@ class ProcessClientDataView(View):
             client.save()
 
             # if successful, reply with 200 OK and top-level meta data (if exists), as per JSON API v1.0
-            if 'meta' in data:
+            if 'meta' in response_json:
                 response_json = json.dumps(request_json['meta'])
                 return HttpResponse(response_json, status=200)
             else:
