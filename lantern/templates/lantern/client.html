@@ -1,0 +1,8 @@
+{% if client_id %}
+    <ul>
+        <li><p>Name: {{ client_name }}</p></li>
+        <li><p>URL: <a href="{{ client_url }}"></a></p></li>
+    </ul>
+{% else %}
+    <p>client not found</p>
+{% endif %}

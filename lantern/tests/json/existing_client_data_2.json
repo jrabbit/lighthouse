@@ -1,0 +1,10 @@
+{
+    "data": {
+        "type": "client",
+        "id": "9b165d1a-e98f-4c70-8645-552b82d2a57b",
+        "attributes": {
+            "name": "Updated Second Buoy Test Client",
+            "url": "https://testclient.fake/2/updated"
+        }
+    }
+}
