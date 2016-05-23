@@ -46,3 +46,6 @@ staticfiles/
 
 # Vagrant
 .vagrant/
+
+# Other stuff
+*.swp
