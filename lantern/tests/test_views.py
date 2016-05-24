@@ -78,8 +78,15 @@ class ProcessClientDataViewTest(TestCase):
         updated_model = BuoyClient.objects.get(id=client_id)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(client_data['data']['attributes']['name'], updated_model.name)
-        self.assertEqual(client_data['data']['attributes']['url'], updated_model.url)
+        attributes = client_data['data']['attributes']
+        self.assertEqual(attributes['name'], updated_model.name)
+        self.assertEqual(attributes['url'], updated_model.url)
+        self.assertEqual(attributes['country'], updated_model.country)
+        self.assertEqual(attributes['province'], updated_model.province)
+        self.assertEqual(attributes['city'], updated_model.city)
+        self.assertEqual(attributes['registrations'], updated_model.registrations)
+        self.assertEqual(attributes['is_https'], updated_model.is_https)
+        self.assertEqual(attributes['population'], updated_model.population)
 
     def test_incorrect_type_gets_rejected(self):
         bad_type = self.from_file('json/bad_type.json')

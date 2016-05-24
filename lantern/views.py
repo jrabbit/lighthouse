@@ -39,10 +39,14 @@ class ProcessClientDataView(View):
                 # generate uuid and add to json
                 client_id = uuid.uuid4()
                 # build and save client model
-                client = BuoyClient(id=client_id,
-                                name=data['attributes']['name'],
-                                url=data['attributes']['url']
-                                )
+                try:
+                    client = BuoyClient(id=client_id)
+                    for attribute in data['attributes']:
+                        setattr(client, attribute, data['attributes'][attribute])
+                except Exception as e:
+                    # reply 400 Bad Request if client cannot be instantiated
+                    return HttpResponse(status=400)
+
                 client.save()
                 # convert the updated data back into json
                 request_json['data']['id'] = client_id.hex
@@ -57,9 +61,12 @@ class ProcessClientDataView(View):
         request_json = json.loads(request.body)
         data = request_json['data']
 
-        if data['type'] == "client" and ('id' in data):
+        if data['type'] == "client":
             # reply 404 Not Found if object doesn't exist, as per JSON API v1.0
-            client = get_object_or_404(BuoyClient, id=data['id'])
+            if 'id' in data:
+                client = get_object_or_404(BuoyClient, id=data['id'])
+            else:
+                return HttpResponse(status=404)
             for attribute in data['attributes']:
                 # update model attribute value
                 try:

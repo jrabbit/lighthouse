@@ -3,7 +3,13 @@
         "type": "client",
         "attributes": {
             "name": "First New Buoy Test Client",
-            "url": "https://testclient.fake/1"
+            "url": "https://testclient.fake/1",
+            "country": "US",
+            "province": "NY",
+            "city": "New York City",
+            "registrations": "open",
+            "is_https": 0,
+            "population": 13
         }
     }
 }

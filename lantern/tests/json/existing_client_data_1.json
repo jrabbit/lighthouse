@@ -4,7 +4,13 @@
         "id": "d3efef58-80a7-4728-8cb6-257800fb630d",
         "attributes": {
             "name": "Updated First Buoy Test Client",
-            "url": "https://testclient.fake/1/updated"
+            "url": "https://testclient.fake/1/updated",
+            "country": "US",
+            "province": "NY",
+            "city": "New York City",
+            "registrations": "open",
+            "is_https": 1,
+            "population": 25
         }
     }
 }
