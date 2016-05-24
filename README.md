@@ -2,6 +2,7 @@
 Lighthouse will serve as an entry point to finding Buoy-enabled websites. See: [Project Proposal Lighthouse](https://github.com/betterangels/better-angels/wiki/Project-Proposal-Lighthouse) for details.
 
 ## Development
+Documentation can be found on the [Lighthouse Wiki](https://github.com/asabine/lighthouse/wiki).
 ### Getting Started
 First, install requirements using pip (ideally in a virtualenv).
 `pip install -r requirements.txt`
