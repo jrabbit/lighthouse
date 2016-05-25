@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% if client_id %}
+{% block body %}
+{% if client_slug %}
     <ul>
         <li><p>Name: {{ client_name }}</p></li>
         <li><p>URL: <a href="{{ client_url }}"></a></p></li>
@@ -7,3 +8,4 @@
 {% else %}
     <p>client not found</p>
 {% endif %}
+{% endblock %}

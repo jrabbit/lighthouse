@@ -25,8 +25,8 @@ class HomeViewTest(TestCase):
     def test_gets_client_list(self):
         response = self.client.get('/')
         # assert that clients are in html 
-        self.assertContains(response, self.sample_data[0]['id'])
-        self.assertContains(response, self.sample_data[1]['id'])
+        self.assertContains(response, self.sample_data[0]['name'])
+        self.assertContains(response, self.sample_data[1]['name'])
 
 class ProcessClientDataViewTest(TestCase):
     def setUp(self):
@@ -95,18 +95,18 @@ class ProcessClientDataViewTest(TestCase):
 
 class ClientInfoViewTest(TestCase):
     def setUp(self):
-        self.sample_data = [{'id': uuid4(), 'name': 'test_c1', 'url': 'https://test_url.fake/1'},
-                            {'id': uuid4(), 'name': 'test_c2', 'url': 'https://test_url.fake/2'}]
+        self.sample_data = [{'id': uuid4(), 'name': 'Test C1', 'url': 'https://test_url.fake/1'},
+                            {'id': uuid4(), 'name': 'Test C2', 'url': 'https://test_url.fake/2'}]
         for d in self.sample_data:
-            client = BuoyClient(d['id'], d['name'], d['url'])
-            client.save()
+            buoy = BuoyClient(d['id'], d['name'], d['url'])
+            buoy.save()
 
     def test_uses_correct_template(self):
         response = self.client.get('/client')
         self.assertTemplateUsed('lantern/client.html')
 
     def test_uuid_urls_pass_correct_data_to_template(self):
-        client_url = str("/client/%s/" % self.sample_data[0]['id'])
+        client_url = str("/client/%s/" % "test-c1")
         response = self.client.get(client_url)
         self.assertContains(response, self.sample_data[0]['name'])
         self.assertContains(response, self.sample_data[0]['url'])

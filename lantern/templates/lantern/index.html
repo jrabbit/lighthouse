@@ -3,7 +3,7 @@
 {% if client_list %}
     <ul class="client_table">
     {% for client in client_list %}
-    <li><a href="/client/{{ client.id }}/">{{ client.name }}</a></li>
+    <li><a href="/client/{{ client.slug }}/">{{ client.name }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
