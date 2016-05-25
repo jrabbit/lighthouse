@@ -44,6 +44,7 @@ class ProcessClientDataView(View):
                     for attribute in data['attributes']:
                         setattr(client, attribute, data['attributes'][attribute])
                 except Exception as e:
+                    print e
                     # reply 400 Bad Request if client cannot be instantiated
                     return HttpResponse(status=400)
 

@@ -40,6 +40,16 @@ class ProcessClientDataViewTest(TestCase):
         data = open(filename, 'r').read()
         return data
 
+    def test_new_json_with_id_returns_forbidden(self):
+        client_data = '{"data": { "type": "client", "id": "d3efef58-80a7-4728-8cb6-257800fb630d", "attributes": { "name": "New Client With ID", "url": "https://testclient.fake/" } } }'
+        response = self.client.post('/rod/', client_data, content_type='application/vnd.api+json')
+        self.assertEqual(response.status_code, 403)
+
+    def test_non_existent_attributes_return_bad_request(self):
+        incorrect_data = self.from_file('json/incorrect_attributes.json')
+        response = self.client.post('/rod/', incorrect_data, content_type='application/vnd.api+json')
+        self.assertEqual(response.status_code, 400)
+
     def test_correct_new_json_replies_with_id(self):
         response_1 = self.client.post('/rod/', self.new_client_data_1, content_type='application/vnd.api+json')
         response_2 = self.client.post('/rod/', self.new_client_data_2, content_type='application/vnd.api+json')
@@ -105,8 +115,9 @@ class ClientInfoViewTest(TestCase):
         response = self.client.get('/client')
         self.assertTemplateUsed('lantern/client.html')
 
-    def test_uuid_urls_pass_correct_data_to_template(self):
-        client_url = str("/client/%s/" % "test-c1")
+    def test_client_urls_pass_correct_data_to_template(self):
+        buoy = BuoyClient.objects.get(id=self.sample_data[0]['id'])
+        client_url = buoy.get_absolute_url()
         response = self.client.get(client_url)
         self.assertContains(response, self.sample_data[0]['name'])
         self.assertContains(response, self.sample_data[0]['url'])

@@ -11,6 +11,6 @@ class BuoyClientTest(TestCase):
                                   url="https://dk64.ssbm.warez")
         self.client.save()
 
-    def test_get_slug(self):
-        expected = "donkey-kong-64-was-terrible"
-        self.assertEqual(self.client.slug, expected)
+    def test_get_absolute_url(self):
+        expected = "/client/donkey-kong-64-was-terrible/"
+        self.assertEqual(self.client.get_absolute_url(), expected)

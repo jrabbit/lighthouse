@@ -1,6 +1,7 @@
 import uuid
 import re
 from django.db import models
+from django.core.urlresolvers import reverse
 
 class BuoyClient(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -24,11 +25,11 @@ class BuoyClient(models.Model):
 
     # add more fields for other pieces of client data
 
-    def get_slug(self):
-        slug = re.sub(r"[^\w]+", " ", self.name)
-        slug = "-".join(slug.lower().strip().split())
-        return slug
+    def get_absolute_url(self):
+        return reverse('client_info', args=[self.slug])
 
     def save(self, *args, **kwargs):
-        self.slug = self.get_slug()
+        slug = re.sub(r"[^\w]+", " ", self.name)
+        slug = "-".join(slug.lower().strip().split())
+        self.slug = slug
         super(BuoyClient, self).save(*args, **kwargs)
