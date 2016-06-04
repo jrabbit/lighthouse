@@ -89,12 +89,12 @@ class ProcessClientDataView(View):
 class ClientInfoView(TemplateView):
     template_name = "lantern/client.html"
 
-    def get(self, request, client_slug):
-        client = get_object_or_404(BuoyClient, slug=client_slug)
+    def get(self, request, client_link):
+        client = get_object_or_404(BuoyClient, link=client_link)
 
         # get info from model & pass to template
         context_data = {} 
-        context_data['client_slug'] = client.slug
+        context_data['client_link'] = client.link
         context_data['client_name'] = client.name
         context_data['client_url'] = client.url
         return self.render_to_response(status=200, context=context_data)

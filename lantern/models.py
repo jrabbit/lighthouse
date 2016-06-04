@@ -1,3 +1,4 @@
+import base64
 import uuid
 import re
 from django.db import models
@@ -7,7 +8,7 @@ class BuoyClient(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200)
     url = models.URLField(max_length=200)
-    slug = models.SlugField(max_length=40, default="")
+    link = models.CharField(max_length=200, default="") # can a malicious client use this default value collision for something?
 
     # locations
     country = models.CharField(max_length=200, default="")
@@ -26,10 +27,9 @@ class BuoyClient(models.Model):
     # add more fields for other pieces of client data
 
     def get_absolute_url(self):
-        return reverse('client_info', args=[self.slug])
+        return reverse('client_info', args=[self.link])
 
     def save(self, *args, **kwargs):
-        slug = re.sub(r"[^\w]+", " ", self.name)
-        slug = "-".join(slug.lower().strip().split())
-        self.slug = slug
+        link_id = str(uuid.uuid4())
+        self.link = base64.urlsafe_b64encode(link_id)
         super(BuoyClient, self).save(*args, **kwargs)
