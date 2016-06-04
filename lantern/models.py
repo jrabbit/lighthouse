@@ -6,10 +6,10 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import FieldDoesNotExist
 
 class BuoyClient(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=200)
     url = models.URLField(max_length=200)
-    link = models.CharField(max_length=200, default="") # can a malicious client use this default value collision for something?
+    link = models.CharField(max_length=200, unique=True)
 
     # locations
     country = models.CharField(max_length=200, default="")
