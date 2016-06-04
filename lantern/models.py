@@ -9,15 +9,15 @@ class BuoyClient(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=200)
     url = models.URLField(max_length=200)
-    link = models.CharField(max_length=200, unique=True)
+    link = models.CharField(max_length=200, unique=True, blank=True)
 
     # locations
-    country = models.CharField(max_length=200, default="")
-    province = models.CharField(max_length=200, default="")
-    city = models.CharField(max_length=200, default="")
+    country = models.CharField(max_length=200, default="", blank=True)
+    province = models.CharField(max_length=200, default="", blank=True)
+    city = models.CharField(max_length=200, default="", blank=True)
 
     # what registrations are allowed?
-    registrations = models.CharField(max_length=200, default="")
+    registrations = models.CharField(max_length=200, default="", blank=True)
 
     # does the client support HTTPS?
     is_https = models.BooleanField(default=False)
