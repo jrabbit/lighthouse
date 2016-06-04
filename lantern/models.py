@@ -29,7 +29,11 @@ class BuoyClient(models.Model):
     def get_absolute_url(self):
         return reverse('client_info', args=[self.link])
 
+    def get_internal_link(self):
+        if self.link == "":
+            link_id = str(uuid.uuid4())
+            self.link = base64.urlsafe_b64encode(link_id)
+
     def save(self, *args, **kwargs):
-        link_id = str(uuid.uuid4())
-        self.link = base64.urlsafe_b64encode(link_id)
+        self.get_internal_link()
         super(BuoyClient, self).save(*args, **kwargs)
