@@ -3,6 +3,7 @@ import uuid
 import re
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.core.exceptions import FieldDoesNotExist
 
 class BuoyClient(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -33,6 +34,14 @@ class BuoyClient(models.Model):
         if self.link == "":
             link_id = str(uuid.uuid4())
             self.link = base64.urlsafe_b64encode(link_id)
+
+    def safe_set_attributes(self, attributes):
+        allowed = ["name", "url", "country", "province", "city", "registrations", "is_https", "population"]
+        for attribute in attributes:
+            if attribute in allowed:
+                setattr(self, attribute, attributes[attribute])
+            else:
+                raise FieldDoesNotExist
 
     def save(self, *args, **kwargs):
         self.get_internal_link()

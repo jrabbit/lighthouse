@@ -41,10 +41,9 @@ class ProcessClientDataView(View):
                 # build and save client model
                 try:
                     client = BuoyClient(id=client_id)
-                    for attribute in data['attributes']:
-                        setattr(client, attribute, data['attributes'][attribute])
+                    client.safe_set_attributes(data['attributes'])
                 except Exception as e:
-                    print e
+                    raise e
                     # reply 400 Bad Request if client cannot be instantiated
                     return HttpResponse(status=400)
 
@@ -68,13 +67,13 @@ class ProcessClientDataView(View):
                 client = get_object_or_404(BuoyClient, id=data['id'])
             else:
                 return HttpResponse(status=404)
-            for attribute in data['attributes']:
                 # update model attribute value
-                try:
-                    setattr(client, attribute, data['attributes'][attribute])
-                except Exception as e:
-                    # field doesn't exist; reply 400 Bad Request
-                    return HttpResponse(status=400)
+            try:
+                client.safe_set_attributes(data['attributes'])
+            except Exception as e:
+                raise e
+                # field doesn't exist; reply 400 Bad Request
+                return HttpResponse(status=400)
             client.save()
             # if successful, reply with 200 OK and top-level meta data (if exists), as per JSON API v1.0
             if 'meta' in request_json:

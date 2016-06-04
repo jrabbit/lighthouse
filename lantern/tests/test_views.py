@@ -1,4 +1,5 @@
 from django.test import TestCase, RequestFactory
+from django.core.exceptions import FieldDoesNotExist
 from lantern.models import BuoyClient
 from uuid import uuid4
 import json
@@ -45,10 +46,11 @@ class ProcessClientDataViewTest(TestCase):
         response = self.client.post('/rod/', client_data, content_type='application/vnd.api+json')
         self.assertEqual(response.status_code, 403)
 
-    def test_non_existent_attributes_return_bad_request(self):
-        incorrect_data = self.from_file('json/incorrect_attributes.json')
-        response = self.client.post('/rod/', incorrect_data, content_type='application/vnd.api+json')
-        self.assertEqual(response.status_code, 400)
+    def test_new_non_existent_attributes_return_bad_request(self):
+        incorrect_data = self.from_file('json/incorrect_attributes_new.json')
+        with self.assertRaises(FieldDoesNotExist):
+            response = self.client.post('/rod/', incorrect_data, content_type='application/vnd.api+json')
+            self.assertEqual(response.status_code, 400)
 
     def test_correct_new_json_replies_with_id(self):
         response_1 = self.client.post('/rod/', self.new_client_data_1, content_type='application/vnd.api+json')
